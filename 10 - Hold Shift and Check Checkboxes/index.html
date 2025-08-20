@@ -97,33 +97,18 @@
 
     <script>
       const inbox = document.querySelectorAll('.inbox input[type="checkbox"]');
-      const inboxArr = Array.from(inbox);
-      let clickShiftLog = [];
-      const checkList = new Array(inbox.length).fill(false);
-
-      inboxArr.forEach((input, index) => {
-        const id = index;
-        input.addEventListener("click", (e) => {
-          return handleCheck.call(input, e, id);
-        });
-      });
-      function handleCheck(e, id) {
-        checkList[id] = !checkList[id];
-
-        if (e.shiftKey && e.target.checked) {
-          clickShiftLog.push(id);
-          if (clickShiftLog.length > 2) {
-            clickShiftLog = [id];
-          } else {
-            clickShiftLog.sort((a, b) => a - b);
-          }
-          for (let i = clickShiftLog[0]; i <= clickShiftLog[1]; i++) {
-            checkList[i] = true;
-          }
+      let inBetween = false;
+      let lastChecked;
+      inbox.forEach((item) => item.addEventListener("click", eventHandler));
+      function eventHandler(e) {
+        if (e.shiftKey && this.checked) {
+          inbox.forEach((item) => {
+            if (item === e.target || lastChecked === item)
+              inBetween = !inBetween;
+            inBetween && (item.checked = true);
+          });
         }
-        for (let i = 0; i < inboxArr.length; i++) {
-          inboxArr[i].checked = checkList[i];
-        }
+        lastChecked = e.target;
       }
     </script>
   </body>
